@@ -2,9 +2,19 @@ import os
 import fnmatch
 import zipfile
 
+def locateDrive():
+    # locate the drive using ASCII values from A to Z
+    for driveLetter in range(ord('A'), ord('Z') + 1):
+            folder_path = chr(driveLetter)+r':\SteamLibrary\steamapps\common\Beat Saber\Beat Saber_Data\CustomLevels'
+            if os.path.isdir(folder_path):
+                return folder_path
+
 def extract_zip(zip_file_path, destination_folder):
     # Create a new folder path based on the zip file name
-    new_folder_name = os.path.splitext(os.path.basename(zip_file_path))[0]
+    zip_file_name = os.path.basename(zip_file_path)
+    # remove the extension
+    new_folder_name = os.path.splitext(zip_file_name)[0]
+    # create 
     new_folder_path = os.path.join(destination_folder, new_folder_name)
 
     # Create the new folder
@@ -33,23 +43,15 @@ def find_zip_files(directory):
 
 def main():
     folder_path = r'C:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\CustomLevels'
+    # if that folder does not exist
+    if not os.path.isdir(folder_path):
+        # locate the CustomLevels folder
+        folder_path = locateDrive()
 
-    # figures out whether the songs are on the C drive or not, only accepting Y or N
-    choice = 'a'
-    while choice != "Y" and choice != "N":
-        choice = input("Is your Beatsaber on your C drive? (Y/N)\n").upper()
-
-    # if saved in a different drive
-    if choice == "N":
-        driveLetter = 'a'
-        if len(driveLetter) != 1:
-            driveLetter = input("Enter the letter of your drive: ").upper()
-        
-        # sets the new folder path
-        folder_path = driveLetter+':\SteamLibrary\steamapps\common\Beat Saber\Beat Saber_Data\CustomLevels'
-
-    # extract the songs in the folder
+    # find any zipped songs in the folder
     zip_files = find_zip_files(folder_path)
+    
+    # for each zipped song, unzip it
     for file in zip_files:
         extract_zip(file, folder_path)
 
