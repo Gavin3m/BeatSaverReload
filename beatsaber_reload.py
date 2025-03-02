@@ -2,12 +2,21 @@ import os
 import fnmatch
 import zipfile
 
+# add linux support
+
 def locateDrive():
-    # locate the drive using ASCII values from A to Z
+    # locate the drive using ASCII values from A to Z for windows-based drives
     for driveLetter in range(ord('A'), ord('Z') + 1):
             folder_path = chr(driveLetter)+r':\SteamLibrary\steamapps\common\Beat Saber\Beat Saber_Data\CustomLevels'
             if os.path.isdir(folder_path):
                 return folder_path
+    
+    # locate the drive for Linux-based drives
+    folder_path = os.path.expandvars('$HOME/.steam/steam/steamapps/common/Beat Saber/Beat Saber_Data/CustomLevels')
+    if os.path.isdir(folder_path):
+        return folder_path
+    else:
+        print("ERROR: folder not found")
 
 def extract_zip(zip_file_path, destination_folder):
     # Create a new folder path based on the zip file name
